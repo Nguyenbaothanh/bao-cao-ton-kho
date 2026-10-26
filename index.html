@@ -316,7 +316,43 @@ dialog#lb header{display:flex;justify-content:space-between;align-items:center;p
 dialog#lb header span{font-size:14px;color:var(--muted)}
 dialog#lb .lbimg{overflow:auto;background:#fff}
 dialog#lb img{display:block;max-width:none;width:max(100%,1400px)}
-.guidebtn{position:absolute;top:20px;right:0;z-index:5;font-weight:600}
+.heroacts{position:absolute;top:20px;right:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.guidebtn{font-weight:600}
+mark.qmark{background:var(--sel,#fff2a8);color:inherit;border-radius:3px;padding:0 1px;cursor:pointer;box-shadow:0 0 0 1px rgba(143,87,0,.35)}
+mark.qmark:hover{filter:brightness(.95)}
+mark.qmark.flash{animation:qflash 1.4s ease 1}
+@keyframes qflash{0%,60%{outline:3px solid var(--accent)}100%{outline:3px solid transparent}}
+body.qhide mark.qmark{background:transparent;box-shadow:none}
+.qview{position:fixed;z-index:96;display:none;width:min(380px,calc(100vw - 24px));max-height:60vh;overflow:auto;background:var(--surface);color:var(--fg);border:1.5px solid var(--accent);border-radius:12px;box-shadow:var(--shadow);padding:12px}
+.qview.on{display:block}
+.qview .qc{padding:8px 0;border-top:1px dashed var(--line)}.qview .qc:first-of-type{border-top:0;padding-top:0}
+.qview .qm{font-size:12.5px;color:var(--muted);margin-bottom:2px}
+.qdrawer{position:fixed;z-index:97;top:0;right:0;bottom:0;width:min(420px,96vw);background:var(--surface);color:var(--fg);border-left:1px solid var(--line);box-shadow:var(--shadow);transform:translateX(105%);transition:transform .2s;display:flex;flex-direction:column}
+.qdrawer.on{transform:none}
+.qdrawer .qdh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.qdrawer .qdh h2{margin:0;font-size:17px}
+.qdrawer .qdt{padding:8px 16px;border-bottom:1px solid var(--line);font-size:13.5px;display:flex;gap:8px;align-items:center}
+.qdrawer .qdb{overflow:auto;padding:4px 16px 16px}
+.qdrawer h4{margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.qdrawer .qi{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:6px 0;color:var(--fg);font:inherit;font-size:13.5px;cursor:pointer}
+.qdrawer .qi:hover{border-color:var(--accent)}
+.qdrawer .qi .qx{display:block;font-size:12.5px;color:var(--muted);margin-bottom:2px}
+@media print{.heroacts,.qdrawer,.qview{display:none!important}}
+.blk.collapsible>.bh{cursor:pointer;user-select:none}
+.blk.collapsible>.bh::after{content:"▾";margin-left:auto;font-size:16px;color:var(--muted);transition:transform .15s}
+.blk.collapsible.collapsed>.bh{margin-bottom:0}
+.blk.collapsible.collapsed>.bh::after{transform:rotate(-90deg)}
+.blk.collapsible.collapsed>*:not(.bh){display:none}
+.blk.collapsible>.bh .bhint{font-size:12.5px;font-weight:500;color:var(--muted);margin-left:8px}
+details.qdd{border-top:1px solid var(--line);padding:8px 16px;font-size:13.5px}
+details.qdd summary{cursor:pointer;font-weight:600;padding:4px 0}
+details.qdd .qddb{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+details.qdd .muted{flex:1 1 100%;margin:2px 0}
+.qrep{margin:6px 0 0 12px;padding:6px 0 6px 10px;border-left:2px solid var(--line);font-size:13.5px}
+.qrbox{margin:8px 0 0 12px}.qrbox textarea,.qrbox input{width:100%;box-sizing:border-box;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit;font-size:13.5px;margin-bottom:6px}
+.qrbox[hidden]{display:none}
+.qdrawer div.qi{display:block;cursor:default}
+.qdrawer .qgo{display:block;width:100%;text-align:left;background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;cursor:pointer}
 dialog#ug{border:1px solid var(--line);border-radius:14px;padding:0;max-width:720px;width:94vw;max-height:88vh;background:var(--surface);color:var(--fg)}
 dialog#ug::backdrop{background:rgba(8,20,18,.6)}
 dialog#ug .ugh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface)}
@@ -451,10 +487,11 @@ dialog#cp textarea{width:100%;min-height:260px;font:13px/1.55 var(--mono);paddin
       <p class="sub">10 báo cáo của module Kho, đã mô tả đủ 10/10.</p>
       <p class="meta"><b>Cập nhật</b> 23/10/2026</p>
     </div>
-    <button class="btn guidebtn" type="button" id="ugopen">❓ Xem hướng dẫn</button>
+    <div class="heroacts"><button class="btn guidebtn" type="button" id="qaopen">💬 Tất cả bình luận <span id="qacount">(0)</span></button><button class="btn guidebtn" type="button" id="ugopen">❓ Xem hướng dẫn</button></div>
   </div>
 </header>
 
+<script type="application/json" id="kho-db">[]</script>
 <dialog id="ug" aria-label="Hướng dẫn sử dụng">
   <div class="ugh"><h2>Hướng dẫn sử dụng</h2><button class="btn" type="button" id="ugx">Đóng</button></div>
   <div class="ugb">
@@ -503,6 +540,9 @@ dialog#cp textarea{width:100%;min-height:260px;font:13px/1.55 var(--mono);paddin
       <li>Nhập <b>tên của bạn</b> vào ô <b>TÊN CỦA BẠN</b> (ở mục Ý kiến, hoặc trong khung ghi chú ô). Chỉ cần nhập một lần trên mỗi máy.</li>
       <li>Sau khi có tên, kết luận, ghi chú và bình luận sẽ tự gửi lên Google Sheet chung. Dòng chữ nhỏ dưới ô ghi chú báo "Đã lưu vào Google Sheet" khi thành công.</li>
       <li>Nếu báo không kết nối được, ý kiến vẫn được giữ trên máy bạn và tự gửi lại lần sau khi mở trang.</li>
+      <li>Bình luận của bạn chỉ mình bạn xem được. Quản trị viên mới xem được bình luận của tất cả mọi người.</li>
+      <li>Mục "Mục đích" ở đầu mỗi báo cáo đang được thu gọn. Bấm vào tiêu đề để mở ra hoặc ẩn đi.</li>
+      <li>Bấm <b>Tất cả bình luận</b> rồi mở "Dữ liệu và quản trị" nếu bạn muốn xuất bình luận của mình ra file JSON.</li>
     </ul>
     <div class="tip">Ý kiến được lưu theo trình duyệt. Hãy dùng cùng một trình duyệt và cùng một tên để thấy lại ý kiến của mình.</div>
 
@@ -1527,6 +1567,8 @@ function route(scroll){
     host.innerHTML=qtView(); document.getElementById('qtframe').srcdoc=QTHTML; document.title='Quy trình hiện tại · Báo cáo tồn kho';
   } else { $('.app').classList.remove('has-sql'); $('#sqp').hidden=true; host.innerHTML=dictView(); initDict(); document.title='Từ điển dữ liệu · Báo cáo tồn kho'; }
   refreshChrome(true);
+  initCollapse();
+  applyMarks();
   if(scroll){ const top=$('.app').getBoundingClientRect().top+window.scrollY-(innerWidth<=960?0:12); window.scrollTo({top:Math.max(0,top),behavior:'auto'}); }
 }
 window.addEventListener('hashchange',()=>route(true));
@@ -1582,7 +1624,7 @@ document.addEventListener('click',async e=>{
     return;
   }
   if(el=t.closest('[data-opentech]')){ const d=$('#sec-tech'); if(d){ d.open=true; d.scrollIntoView(); } return; }
-  if(el=t.closest('[data-scroll]')){ const d=document.getElementById(el.dataset.scroll); if(d) d.scrollIntoView(); return; }
+  if(el=t.closest('[data-scroll]')){ const d=document.getElementById(el.dataset.scroll); if(d){ d.classList.remove('collapsed'); d.scrollIntoView(); } return; }
   if(el=t.closest('[data-zoom]')){
     const img=el.closest('.shot').querySelector('img'); $('#lbimg').src=img.src; $('#lbimg').alt=img.alt; $('#lbcap').textContent=img.alt; $('#lb').showModal(); return;
   }
@@ -1635,10 +1677,23 @@ async function sheetPost(payload){
   const body=JSON.stringify(Object.assign({token:SHEET_TOKEN},payload));
   await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body});
 }
+const ADM_KEY='kho-brd-admin';
+let ADMIN_OK=false;
+const adminKey=()=>{ try{return sessionStorage.getItem(ADM_KEY)||'';}catch(e){return '';} };
+let EMBED=[]; try{ const j=JSON.parse(document.getElementById('kho-db').textContent||'[]'); EMBED=Array.isArray(j)?j:(j.rows||[]); }catch(e){}
+const IMP_KEY='kho-brd-imported';
+function getImported(){ try{ const j=JSON.parse(localStorage.getItem(IMP_KEY)||'[]'); return Array.isArray(j)?j:[]; }catch(e){ return []; } }
+const rowKey=x=>[x.user,x.report,x.row,x.col].map(v=>String(v).toLowerCase()).join('|');
+function mergeRows(a,b){ const m=new Map(); [].concat(a||[],b||[]).forEach(x=>{ if(x&&x.user&&x.report&&x.row!==undefined&&!m.has(rowKey(x))) m.set(rowKey(x),x); }); return [...m.values()]; }
 async function sheetList(){
-  const res=await fetch(SHEET_URL+(SHEET_URL.includes('?')?'&':'?')+'action=list&token='+encodeURIComponent(SHEET_TOKEN),{cache:'no-store'});
+  const k=adminKey();
+  const res=await fetch(SHEET_URL+(SHEET_URL.includes('?')?'&':'?')+'action=list&token='+encodeURIComponent(SHEET_TOKEN)+'&user='+encodeURIComponent(who())+(k?'&admin='+encodeURIComponent(k):''),{cache:'no-store'});
   const j=await res.json(); if(!j||!j.ok) throw new Error('bad');
-  REMOTE=j.rows||[]; return REMOTE;
+  ADMIN_OK=!!j.admin; if(k&&!ADMIN_OK){ try{sessionStorage.removeItem(ADM_KEY);}catch(e){} }
+  const me=who().toLowerCase(); let rows=j.rows||[];
+  if(!ADMIN_OK) rows=rows.filter(x=>String(x.user).toLowerCase()===me);
+  REMOTE=ADMIN_OK?mergeRows(rows,[].concat(EMBED,getImported())):rows;
+  return REMOTE;
 }
 const RPT_ROW='__BAOCAO__', RPT_COL='ket_luan';
 async function pushReport(r){
@@ -1685,6 +1740,9 @@ async function syncAll(){
     if(me){ for(const key in ST){ for(const z of (ST[key].quotes||[])){
       const m=REMOTE.find(x=>x.report===key&&x.row===Q_ROW&&x.col===z.q.slice(0,300)&&String(x.user).toLowerCase()===me);
       if(!m||String(m.note)!==z.n){ try{ await sheetPost({action:'save',user:who(),report:key,row:Q_ROW,col:z.q.slice(0,300),value:'',note:z.n}); }catch(e){} } } } }
+    if(me){ for(const key in ST){ for(const z of (ST[key].replies||[])){
+      const m=REMOTE.find(x=>x.report===key&&x.row===REP_ROW&&x.col===z.pid+'#'+z.id&&String(x.user).toLowerCase()===me);
+      if(!m||String(m.note)!==z.n){ try{ await sheetPost({action:'save',user:who(),report:key,row:REP_ROW,col:z.pid+'#'+z.id,value:'',note:z.n}); }catch(e){} } } } }
     saveST();
     if(me){ for(const r of REPORTS){ const S=ST[r.c]; if(!S||(!S.s&&!(S.note||'').trim())) continue;
       const m=REMOTE.find(x=>x.report===r.c&&x.row===RPT_ROW&&String(x.user).toLowerCase()===me);
@@ -1695,6 +1753,7 @@ async function syncAll(){
         const m=REMOTE.find(x=>x.report===r.c&&x.row===row&&x.col===col&&String(x.user).toLowerCase()===me);
         if(!m||String(m.note)!==v){ try{ await sheetPost({action:'save',user:who(),report:r.c,row,col,value:'',note:v}); }catch(e){} } } } }
     const v=parseHash(); if(v.kind==='r'&&REPORTS[v.i].done&&REPORTS[v.i].grid){ markNotes(REPORTS[v.i]); if(CNK) show(CNK.i,CNK.j); }
+    applyMarks();
   }catch(e){}
 }
 
@@ -1769,13 +1828,13 @@ document.addEventListener('click',async e=>{
   if(e.target.id==='qpc'){ qpop.classList.remove('on'); return; }
   const dq=e.target.closest('[data-qdel]');
   if(dq){ const key=curKey(), S=stOf(key), x=(S.quotes||[])[+dq.dataset.qdel]; if(!x) return;
-    S.quotes.splice(+dq.dataset.qdel,1); saveST(); refreshQList(); pushQuote(key,x.q,''); return; }
+    S.quotes.splice(+dq.dataset.qdel,1); saveST(); refreshQList(); applyMarks(); pushQuote(key,x.q,''); return; }
   if(e.target.id==='qps'){
     const nm=$('#qpname'); if(nm&&nm.value.trim()){ try{localStorage.setItem(WHO_KEY,nm.value.trim());}catch(err){} }
     const note=$('#qpt').value.trim(); if(!note){ $('#qpm').textContent='Hãy nhập nội dung bình luận.'; return; }
     const key=curKey(), S=stOf(key); S.quotes=S.quotes||[];
     const old=S.quotes.find(x=>x.q===QSEL); if(old) old.n=note; else S.quotes.push({q:QSEL,n:note});
-    saveST(); refreshQList();
+    saveST(); refreshQList(); applyMarks();
     $('#qpm').textContent=syncOn()?(who()?'Đang gửi lên Google Sheet...':'Đã lưu trên máy này. Nhập tên để gửi lên Google Sheet.'):'Đã lưu trên máy này.';
     const ok=await pushQuote(key,QSEL,note);
     if(syncOn()&&who()) $('#qpm').textContent=ok?'Đã gửi lên Google Sheet.':'Đã lưu trên máy này, chưa gửi được lên Google Sheet.';
@@ -1785,6 +1844,207 @@ document.addEventListener('click',async e=>{
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ qpop.classList.remove('on'); hideQ(); } });
 document.addEventListener('scroll',()=>hideQ(),true);
+
+
+/* ---------- hiện bình luận trên giao diện ---------- */
+const qnorm=t=>String(t||'').replace(/\s+/g,' ').trim();
+function labelOf(key){ const v=VIEWS.find(x=>(x.kind==='r'&&REPORTS[x.i].c===key)||x.id===key); return v&&v.kind==='r'?REPORTS[v.i].c+': '+REPORTS[v.i].t:(key==='quy-trinh'?'Quy trình hiện tại':key==='tu-dien'?'Từ điển dữ liệu':key); }
+function allComments(){
+  const out=[], me=who().toLowerCase(), seen=new Set();
+  for(const key in ST){ for(const z of (ST[key].quotes||[])){ out.push({key,kind:'q',q:z.q,n:z.n,user:who()||'Bạn',mine:true}); seen.add('q|'+key+'|'+qnorm(z.q).slice(0,300)+'|'+me); }
+    for(const [k,v] of Object.entries(ST[key].cells||{})){ if(v&&v.trim()){ const [row,col]=k.split(' || '); out.push({key,kind:'c',q:row+' · '+col,n:v,user:who()||'Bạn',mine:true}); seen.add('c|'+key+'|'+k+'|'+me);} } }
+  for(const x of REMOTE){ const note=String(x.note||'').trim(); if(!note) continue; const u=String(x.user).toLowerCase();
+    if(x.row===Q_ROW){ if(seen.has('q|'+x.report+'|'+qnorm(x.col).slice(0,300)+'|'+u)) continue; out.push({key:x.report,kind:'q',q:String(x.col),n:note,user:x.user,time:x.time,mine:u===me}); }
+    else if(String(x.row).indexOf('__')!==0){ if(seen.has('c|'+x.report+'|'+x.row+' || '+x.col+'|'+u)) continue; out.push({key:x.report,kind:'c',q:x.row+' · '+x.col,n:note,user:x.user,time:x.time,mine:u===me}); } }
+  return out;
+}
+function textIndex(){
+  const host=document.getElementById('view'); if(!host) return null;
+  const w=document.createTreeWalker(host,NodeFilter.SHOW_TEXT,{acceptNode:n=>{ const el=n.parentElement; if(!el||el.closest('textarea,input,script,style,button,select,#qlist,.qpop,.qview,mark.qmark,iframe')) return NodeFilter.FILTER_REJECT; return NodeFilter.FILTER_ACCEPT; }});
+  const nodes=[], str=[], map=[]; let n, last=' ';
+  while((n=w.nextNode())){ const d=n.data; nodes.push(n); const ni=nodes.length-1;
+    for(let i=0;i<d.length;i++){ const c=d[i]; if(/\s/.test(c)){ if(last!==' '){ str.push(' '); map.push([ni,i]); last=' '; } } else { str.push(c); map.push([ni,i]); last=c; } } }
+  return {nodes,s:str.join(''),map};
+}
+function wrapRange(ix,a,b){
+  const segs=[]; let cur=null;
+  for(let k=a;k<b;k++){ const [ni,off]=ix.map[k]; if(cur&&cur.ni===ni&&off>=cur.b-1) cur.b=off+1; else { cur={ni,a:off,b:off+1}; segs.push(cur); } }
+  const marks=[];
+  for(const sg of segs){ const node=ix.nodes[sg.ni]; if(!node.parentNode) continue; const mid=node.splitText(sg.a); mid.splitText(sg.b-sg.a); const m=document.createElement('mark'); m.className='qmark'; mid.parentNode.insertBefore(m,mid); m.appendChild(mid); marks.push(m); }
+  return marks;
+}
+let MOBS=null, markTimer=null;
+function applyMarks(){
+  const host=document.getElementById('view'); if(!host) return;
+  if(MOBS) MOBS.disconnect();
+  try{
+    host.querySelectorAll('mark.qmark').forEach(m=>{ const p=m.parentNode; while(m.firstChild) p.insertBefore(m.firstChild,m); p.removeChild(m); p.normalize(); });
+    const key=curKey(), groups=new Map();
+    allComments().filter(c=>c.kind==='q'&&c.key===key).forEach(c=>{ const g=qnorm(c.q).slice(0,300); if(g.length<2) return; (groups.get(g)||groups.set(g,[]).get(g)).push(c); });
+    for(const g of groups.keys()){
+      const ix=textIndex(); if(!ix) break; const at=ix.s.indexOf(g); if(at<0) continue;
+      wrapRange(ix,at,at+g.length).forEach(m=>{ m.dataset.g=g; });
+    }
+  }catch(e){}
+  updateCount();
+  if(MOBS) MOBS.observe(host,{childList:true,subtree:true});
+}
+function scheduleMarks(){ clearTimeout(markTimer); markTimer=setTimeout(applyMarks,150); }
+function updateCount(){ updateAdminUI(); const n=allComments().length, el=document.getElementById('qacount'); if(el) el.textContent='('+n+')'; if(document.getElementById('qdrawer')&&document.getElementById('qdrawer').classList.contains('on')) renderDrawer(); }
+MOBS=new MutationObserver(scheduleMarks);
+
+const qview=document.createElement('div'); qview.className='qview'; document.body.appendChild(qview);
+function showQView(mark){
+  const g=mark.dataset.g, list=allComments().filter(c=>c.kind==='q'&&c.key===curKey()&&qnorm(c.q).slice(0,300)===g);
+  if(!list.length) return;
+  qview.innerHTML='<div class="qm" style="border-left:3px solid var(--accent);padding-left:8px;margin-bottom:8px">“'+esc(g.length>140?g.slice(0,140)+'…':g)+'”</div>'+list.map(c=>'<div class="qc"><div class="qm"><b>'+esc(c.user)+'</b>'+(c.time?' · '+esc(String(c.time).slice(0,16).replace('T',' ')):'')+'</div>'+esc(c.n).replace(/\n/g,'<br>')+(c.mine&&!c.time?' <button class="btn" type="button" data-qdel2="'+esc(c.q.slice(0,300))+'" style="font-size:12px;padding:1px 8px">Xóa</button>':'')+repliesHTML(c)+'</div>').join('');
+  qview.dataset.g=g; qview.classList.add('on');
+  const r=mark.getBoundingClientRect(), w=qview.offsetWidth, h=qview.offsetHeight;
+  qview.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left))+'px';
+  qview.style.top=Math.max(8,Math.min(innerHeight-h-8,r.bottom+6))+'px';
+}
+document.addEventListener('click',e=>{
+  const del=e.target.closest('[data-qdel2]');
+  if(del){ const q=del.dataset.qdel2, key=curKey(), S=stOf(key); const i=(S.quotes||[]).findIndex(x=>qnorm(x.q).slice(0,300)===qnorm(q)); if(i>=0){ const x=S.quotes.splice(i,1)[0]; saveST(); pushQuote(key,x.q,''); refreshQList(); applyMarks(); } qview.classList.remove('on'); return; }
+  const m=e.target.closest('mark.qmark');
+  if(m){ const sel=window.getSelection(); if(sel&&sel.toString().trim().length>1) return; showQView(m); return; }
+  if(!e.target.closest('.qview')) qview.classList.remove('on');
+});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ qview.classList.remove('on'); closeDrawer(); } });
+
+const qdrawer=document.createElement('aside'); qdrawer.className='qdrawer'; qdrawer.id='qdrawer'; qdrawer.setAttribute('aria-label','Tất cả bình luận');
+qdrawer.innerHTML='<div class="qdh"><h2>Tất cả bình luận</h2><button class="btn" type="button" id="qdx">Đóng</button></div><div class="qdt"><label style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="qdhl" checked> Tô màu đoạn có bình luận</label></div><div class="qdb" id="qdb"></div><details class="qdd" id="qdata"><summary>Dữ liệu và quản trị</summary><div class="qddb"><button class="btn" type="button" data-dl="mine">⬇ Xuất JSON của tôi</button><button class="btn" type="button" id="qdlogin" data-adminlogin>🔒 Đăng nhập quản trị</button><div id="qdadmin" style="display:contents" hidden><div class="muted">Chế độ quản trị: bạn đang thấy bình luận của tất cả người dùng.</div><button class="btn" type="button" data-dl="all">⬇ Xuất JSON tất cả</button><label class="btn" style="cursor:pointer">⬆ Nhập JSON<input type="file" id="qdimp" accept=".json,application/json" hidden></label><button class="btn" type="button" data-dl="html">⬇ Tải trang HTML kèm dữ liệu</button><button class="btn" type="button" data-adminlogout>Thoát quản trị</button><div class="muted">Đừng gửi file HTML kèm dữ liệu cho người dùng khác, vì nó chứa bình luận của mọi người.</div></div></div></details>';
+document.body.appendChild(qdrawer);
+const HL_KEY='kho-brd-to-mau-binh-luan';
+try{ if(localStorage.getItem(HL_KEY)==='0'){ document.body.classList.add('qhide'); qdrawer.querySelector('#qdhl').checked=false; } }catch(e){}
+function renderDrawer(){
+  const list=allComments(), host=document.getElementById('qdb'); if(!host) return;
+  if(!list.length){ host.innerHTML='<p class="muted" style="margin-top:14px">Chưa có bình luận nào. Tô đen một đoạn chữ rồi bấm nút Bình luận để thêm.</p>'; return; }
+  const order=VIEWS.map(v=>v.kind==='r'?REPORTS[v.i].c:v.id), by={};
+  list.forEach(c=>{ (by[c.key]=by[c.key]||[]).push(c); });
+  const keys=Object.keys(by).sort((a,b)=>{ const ia=order.indexOf(a), ib=order.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
+  host.innerHTML=keys.map(k=>'<h4>'+esc(labelOf(k))+' ('+by[k].length+')</h4>'+by[k].map(c=>'<div class="qi"><button type="button" class="qgo" data-qgo="'+esc(k)+'" data-qq="'+esc(qnorm(c.q).slice(0,300))+'" data-qk="'+c.kind+'"><span class="qx">'+(c.kind==='c'?'Ô: ':'“')+esc(c.q.length>110?c.q.slice(0,110)+'…':c.q)+(c.kind==='c'?'':'”')+'</span>'+esc(c.n).replace(/\n/g,'<br>')+'<span class="qx" style="margin:4px 0 0"><b>'+esc(c.user)+'</b>'+(c.time?' · '+esc(String(c.time).slice(0,16).replace('T',' ')):'')+'</span></button>'+(c.kind==='q'?repliesHTML(c):'')+'</div>').join('')).join('');
+}
+function openDrawer(){ renderDrawer(); qdrawer.classList.add('on'); }
+function closeDrawer(){ qdrawer.classList.remove('on'); }
+function goComment(key,q,kind){
+  const v=VIEWS.find(x=>(x.kind==='r'&&REPORTS[x.i].c===key)||x.id===key); if(!v) return;
+  const fin=()=>{ setTimeout(()=>{ const m=[...document.querySelectorAll('#view mark.qmark')].find(x=>x.dataset.g===q); if(m){ const cb=m.closest('.blk.collapsed'); if(cb) cb.classList.remove('collapsed'); m.scrollIntoView({block:'center',behavior:'smooth'}); m.classList.remove('flash'); void m.offsetWidth; m.classList.add('flash'); } },250); };
+  if(parseHash().id!==v.id){ location.hash='#'+v.id; fin(); } else fin();
+  if(innerWidth<900) closeDrawer();
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('#qaopen')){ qdrawer.classList.contains('on')?closeDrawer():openDrawer(); return; }
+  if(e.target.closest('#qdx')){ closeDrawer(); return; }
+  const it=e.target.closest('[data-qgo]'); if(it){ goComment(it.dataset.qgo,it.dataset.qq,it.dataset.qk); return; }
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='qdhl'){ document.body.classList.toggle('qhide',!e.target.checked); try{localStorage.setItem(HL_KEY,e.target.checked?'1':'0');}catch(err){} }
+});
+
+
+/* ---------- trả lời bình luận ---------- */
+const REP_ROW='__TRALOI__';
+const pidOf=c=>String(c.user).toLowerCase()+'|'+qnorm(c.q).slice(0,100);
+function allReplies(){
+  const out=[], me=who().toLowerCase(), seen=new Set();
+  for(const key in ST){ for(const z of (ST[key].replies||[])){ out.push({key,pid:z.pid,id:z.id,n:z.n,user:who()||'Bạn',time:z.t,mine:true}); seen.add(key+'|'+z.pid+'#'+z.id); } }
+  for(const x of REMOTE){ if(x.row!==REP_ROW) continue; const note=String(x.note||'').trim(); if(!note) continue;
+    const i=String(x.col).lastIndexOf('#'), pid=String(x.col).slice(0,i), id=String(x.col).slice(i+1);
+    if(seen.has(x.report+'|'+x.col)) continue;
+    out.push({key:x.report,pid,id,n:note,user:x.user,time:x.time,mine:String(x.user).toLowerCase()===me}); }
+  return out.sort((a,b)=>String(a.time||a.id).localeCompare(String(b.time||b.id)));
+}
+function repliesHTML(c){
+  const pid=pidOf(c), list=allReplies().filter(r=>r.key===c.key&&r.pid===pid);
+  const needName=syncOn()&&!who();
+  return list.map(r=>'<div class="qrep"><div class="qm"><b>'+esc(r.user)+'</b>'+(r.time?' · '+esc(String(r.time).slice(0,16).replace('T',' ')):'')+'</div>'+esc(r.n).replace(/\n/g,'<br>')+(r.mine?' <button class="btn" type="button" data-qrdel data-key="'+esc(c.key)+'" data-pid="'+esc(pid)+'" data-id="'+esc(r.id)+'" style="font-size:12px;padding:1px 8px">Xóa</button>':'')+'</div>').join('')
+   +'<div style="margin-top:6px"><button class="btn" type="button" data-qrep style="font-size:12.5px;padding:3px 10px">↩ Trả lời</button></div>'
+   +'<div class="qrbox" hidden>'+(needName?'<input type="text" class="qrname" placeholder="Tên của bạn">':'')+'<textarea rows="2" class="qrtxt" placeholder="Viết trả lời..."></textarea><button class="btn primary" type="button" data-qsend data-key="'+esc(c.key)+'" data-pid="'+esc(pid)+'" style="font-size:12.5px;padding:3px 12px">Gửi</button></div>';
+}
+async function pushReply(key,pid,id,note){
+  if(!syncOn()||!who()) return false;
+  try{ await sheetPost({action:'save',user:who(),report:key,row:REP_ROW,col:pid+'#'+id,value:'',note:note}); return true; }catch(e){ return false; }
+}
+function rerenderReplyHost(from){
+  if(from&&from.closest('.qview')){ const g=qview.dataset.g; const m=[...document.querySelectorAll('#view mark.qmark')].find(x=>x.dataset.g===g); if(m) showQView(m); }
+  else renderDrawer();
+}
+document.addEventListener('click',async e=>{
+  const rb=e.target.closest('[data-qrep]');
+  if(rb){ const box=rb.parentElement.nextElementSibling; if(box){ box.hidden=!box.hidden; const t=box.querySelector('input,textarea'); if(!box.hidden&&t) t.focus(); } return; }
+  const sb=e.target.closest('[data-qsend]');
+  if(sb){ const box=sb.closest('.qrbox'), ta=box.querySelector('.qrtxt'), nm=box.querySelector('.qrname'), note=ta.value.trim(); if(!note){ ta.focus(); return; }
+    if(nm&&nm.value.trim()){ try{localStorage.setItem(WHO_KEY,nm.value.trim());}catch(err){} }
+    const key=sb.dataset.key, pid=sb.dataset.pid, id=Date.now().toString(36), S=stOf(key);
+    S.replies=S.replies||[]; S.replies.push({pid,id,n:note,t:new Date().toISOString()}); saveST();
+    rerenderReplyHost(sb); updateCount(); pushReply(key,pid,id,note); return; }
+  const db=e.target.closest('[data-qrdel]');
+  if(db){ const key=db.dataset.key, pid=db.dataset.pid, id=db.dataset.id, S=stOf(key);
+    S.replies=(S.replies||[]).filter(z=>!(z.pid===pid&&z.id===id)); saveST();
+    for(let i=REMOTE.length-1;i>=0;i--){ const x=REMOTE[i]; if(x.row===REP_ROW&&x.report===key&&x.col===pid+'#'+id) REMOTE.splice(i,1); }
+    rerenderReplyHost(db); pushReply(key,pid,id,''); return; }
+});
+
+/* ---------- dữ liệu JSON và quản trị ---------- */
+function localRows(){
+  const u=who()||'Bạn', out=[];
+  for(const key in ST){ const S=ST[key];
+    if(S.s||(S.note||'').trim()) out.push({user:u,report:key,row:RPT_ROW,col:RPT_COL,value:S.s||'',note:S.note||''});
+    for(const [k,v] of Object.entries(S.cells||{})){ if(v&&v.trim()){ const [row,col]=k.split(' || '); out.push({user:u,report:key,row,col,value:'',note:v}); } }
+    for(const z of (S.quotes||[])) out.push({user:u,report:key,row:Q_ROW,col:z.q.slice(0,300),value:'',note:z.n});
+    for(const z of (S.replies||[])) out.push({user:u,report:key,row:REP_ROW,col:z.pid+'#'+z.id,value:'',note:z.n,time:z.t});
+  } return out;
+}
+function dl(name,text,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:type||'application/json'})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500); }
+const stamp=()=>new Date().toISOString().slice(0,10);
+function updateAdminUI(){
+  const a=document.getElementById('qdadmin'), l=document.getElementById('qdlogin'); if(!a||!l) return;
+  a.hidden=!ADMIN_OK; a.style.display=ADMIN_OK?'contents':'none'; l.hidden=ADMIN_OK;
+  const h=document.querySelector('#qdrawer .qdh h2'); if(h) h.textContent=ADMIN_OK?'Tất cả bình luận (quản trị)':'Bình luận của tôi';
+}
+async function adminLogin(){
+  if(!syncOn()){ toast('Chưa cấu hình Google Sheet nên chưa thể đăng nhập quản trị.'); return; }
+  const k=prompt('Nhập khóa quản trị:'); if(!k||!k.trim()) return;
+  try{ sessionStorage.setItem(ADM_KEY,k.trim()); }catch(e){}
+  try{ await sheetList(); }catch(e){ toast('Không kết nối được Google Sheet.'); return; }
+  if(ADMIN_OK){ toast('Đã vào chế độ quản trị.'); applyMarks(); } else toast('Sai khóa quản trị.');
+}
+function adminLogout(){ try{sessionStorage.removeItem(ADM_KEY);}catch(e){} ADMIN_OK=false; const me=who().toLowerCase(); REMOTE=REMOTE.filter(x=>String(x.user).toLowerCase()===me); applyMarks(); }
+async function dlHtmlWithData(){
+  let src; try{ src=await (await fetch(location.href.split('#')[0],{cache:'no-store'})).text(); }catch(e){ toast('Không tải được mã nguồn trang. Hãy mở trang từ link GitHub Pages.'); return; }
+  const re=/(<script type="application\/json" id="kho-db">)[\s\S]*?(<\/script>)/;
+  if(!re.test(src)){ toast('Không tìm thấy khối dữ liệu trong trang.'); return; }
+  const json=JSON.stringify(REMOTE).replace(/</g,'\\u003c');
+  dl('bao-cao-ton-kho-co-du-lieu-'+stamp()+'.html',src.replace(re,(m,a,b)=>a+json+b),'text/html');
+}
+document.addEventListener('click',e=>{
+  const d=e.target.closest('[data-dl]');
+  if(d){ const t=d.dataset.dl;
+    if(t==='mine') dl('binh-luan-'+(who()||'toi')+'-'+stamp()+'.json',JSON.stringify({version:1,exported:new Date().toISOString(),rows:localRows()},null,1));
+    else if(t==='all'&&ADMIN_OK) dl('binh-luan-tat-ca-'+stamp()+'.json',JSON.stringify({version:1,exported:new Date().toISOString(),rows:REMOTE},null,1));
+    else if(t==='html'&&ADMIN_OK) dlHtmlWithData();
+    return; }
+  if(e.target.closest('[data-adminlogin]')){ adminLogin(); return; }
+  if(e.target.closest('[data-adminlogout]')){ adminLogout(); return; }
+});
+document.addEventListener('change',e=>{
+  if(e.target.id!=='qdimp'||!ADMIN_OK) return;
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{ const j=JSON.parse(rd.result), rows=(Array.isArray(j)?j:j.rows||[]).filter(x=>x&&x.user&&x.report&&x.row!==undefined&&x.col!==undefined);
+    if(!rows.length){ toast('File không có dữ liệu hợp lệ.'); return; }
+    try{ localStorage.setItem(IMP_KEY,JSON.stringify(mergeRows(getImported(),rows))); }catch(err){}
+    REMOTE=mergeRows(REMOTE,rows); applyMarks(); toast('Đã nhập '+rows.length+' mục.'); }catch(err){ toast('File JSON không đọc được.'); } e.target.value=''; };
+  rd.readAsText(f);
+});
+function initCollapse(){
+  const ov=document.getElementById('sec-ov'); if(!ov||ov.dataset.cinit) return; ov.dataset.cinit='1';
+  ov.classList.add('collapsible','collapsed');
+  const h=ov.querySelector('.bh'); if(h){ h.setAttribute('role','button'); h.setAttribute('tabindex','0'); h.insertAdjacentHTML('beforeend','<span class="bhint">bấm để xem</span>'); }
+}
+document.addEventListener('click',e=>{ const h=e.target.closest('.blk.collapsible>.bh'); if(h){ const b=h.parentElement; b.classList.toggle('collapsed'); const t=h.querySelector('.bhint'); if(t) t.textContent=b.classList.contains('collapsed')?'bấm để xem':'bấm để ẩn'; } });
+document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.blk.collapsible>.bh')){ e.preventDefault(); e.target.click(); } });
 
 /* ---------- hướng dẫn sử dụng ---------- */
 document.addEventListener('click',e=>{
