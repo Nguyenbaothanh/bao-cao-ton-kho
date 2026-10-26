@@ -174,7 +174,7 @@ table.mk tr.tot td{font-weight:700;color:#202124}
 
 /* Lưới số liệu */
 .gridwrap{display:flex;flex-direction:column;gap:12px}
-.fbar{position:sticky;top:calc(var(--stick) + 8px);z-index:6;background:var(--surface);border:1.5px solid var(--accent);border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;display:grid;grid-template-columns:minmax(160px,230px) minmax(0,1fr);gap:6px 22px;max-height:34vh;overflow:auto;overscroll-behavior:contain}
+.fbar{position:static;z-index:6;background:var(--surface);border:1.5px solid var(--accent);border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;display:grid;grid-template-columns:minmax(160px,230px) minmax(0,1fr);gap:6px 22px;}
 .fbar .where{font-size:12.5px;color:var(--muted);font-weight:700;letter-spacing:.03em;text-transform:uppercase;overflow-wrap:anywhere}
 .fbar .val{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15;margin-top:2px;overflow-wrap:anywhere}
 .fbar .lab{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
@@ -402,7 +402,7 @@ dialog#cp textarea{width:100%;min-height:260px;font:13px/1.55 var(--mono);paddin
   .ri.app-link{grid-template-columns:auto}
   .ri.app-link .rn{display:block;font-size:13.5px}
   .how{grid-template-columns:1fr}
-  .fbar{grid-template-columns:1fr;position:sticky;top:auto;bottom:8px;order:2;max-height:36vh}
+  .fbar{grid-template-columns:1fr;position:static;order:2}
   .fbar .val{font-size:24px}
 }
 @media(max-width:600px){
