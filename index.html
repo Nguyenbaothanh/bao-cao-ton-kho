@@ -1117,6 +1117,7 @@ function secVerdict(r,i){
    <label class="l" for="note">Ghi chú (không bắt buộc)</label>
    <textarea id="note" placeholder="Ví dụ: cột Tổng cộng cần tính thêm hàng chờ thanh lý…">${esc(S.note||'')}</textarea>
    <p class="saved" id="savedmsg">${S.s?'Hiện tại: <b>'+STATUS[S.s]+'</b>':'Chưa chọn kết luận.'}</p>
+   ${whoHTML('rnwho')}
    <div class="pager">
      ${prev?`<a class="btn" href="#${slug(i-1)}">← ${prev.c}: ${esc(prev.t)}</a>`:'<span></span>'}
      ${next?`<a class="btn primary" href="#${slug(i+1)}">${next.c}: ${esc(next.t)} →</a>`:`<a class="btn" href="#quy-trinh">Xem quy trình hiện tại →</a>`}
@@ -1508,7 +1509,7 @@ document.addEventListener('click',async e=>{
     document.querySelectorAll('.vbtn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.verdict===S.s)));
     const ts=$('#topstatus'); if(ts){ts.className='chip '+(S.s||'none'); ts.textContent=STATUS[S.s||''];}
     $('#savedmsg').innerHTML=S.s?'Hiện tại: <b>'+STATUS[S.s]+'</b>. Đã lưu.':'Chưa chọn kết luận.';
-    refreshChrome(); return;
+    refreshChrome(); pushReport(r); return;
   }
   if(el=t.closest('.pill[data-k]')){ QFLOW=+el.dataset.k; document.querySelectorAll('#fp .pill').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.k===QFLOW))); flowBody(QFLOW); return; }
   if(false){
@@ -1521,7 +1522,7 @@ document.addEventListener('click',async e=>{
 
 /* ---------- đồng bộ ghi chú với Google Sheet (qua Google Apps Script) ----------
    Dán địa chỉ "Ứng dụng web" của Apps Script vào SHEET_URL. Để trống thì chỉ lưu trên trình duyệt. */
-const SHEET_URL='https://docs.google.com/spreadsheets/d/1n_1fIDGR5jF8Y0aA7qseKCmvjNw98TKS/edit?gid=137859236#gid=137859236';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxDmEQI7ZlQSZgMHh9fm1Y2ONtov1-VqcdWtUjSRM6ZwIjMx01mqZIVp4bSswReyekL/exec';
 const SHEET_TOKEN='kho-Qcj-DGcHnA0K';
 const WHO_KEY='kho-brd-ten-nguoi-ghi';
 let REMOTE=[], SYNC_OK=null;
@@ -1532,9 +1533,10 @@ function syncHint(){
   if(!who()) return 'Nhập tên của bạn bên dưới để ghi chú được lưu vào Google Sheet.';
   return 'Ghi chú tự lưu và gửi lên Google Sheet.';
 }
-function whoHTML(){
+function whoHTML(id){
+  id=id||'cnwho';
   if(!syncOn()) return '';
-  return `<div style="margin-top:8px"><label for="cnwho" style="display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px">TÊN CỦA BẠN</label><input id="cnwho" type="text" value="${esc(who())}" placeholder="Ví dụ: Thanh" style="width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit"></div>`;
+  return `<div style="margin-top:8px"><label for="${id}" style="display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px">TÊN CỦA BẠN</label><input id="${id}" type="text" value="${esc(who())}" placeholder="Ví dụ: Thanh" style="width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit"></div>`;
 }
 function remoteHTML(r,i,j){
   if(!syncOn()||!REMOTE.length) return '';
@@ -1552,6 +1554,19 @@ async function sheetList(){
   const res=await fetch(SHEET_URL+(SHEET_URL.includes('?')?'&':'?')+'action=list&token='+encodeURIComponent(SHEET_TOKEN),{cache:'no-store'});
   const j=await res.json(); if(!j||!j.ok) throw new Error('bad');
   REMOTE=j.rows||[]; return REMOTE;
+}
+const RPT_ROW='__BAOCAO__', RPT_COL='ket_luan';
+async function pushReport(r){
+  if(!syncOn()) return;
+  const S=stOf(r.c), m=document.getElementById('savedmsg');
+  if(!who()){ if(m) m.innerHTML+=' Nhập tên của bạn bên dưới để gửi lên Google Sheet.'; return; }
+  try{
+    await sheetPost({action:'save',user:who(),report:r.c,row:RPT_ROW,col:RPT_COL,value:S.s||'',note:S.note||''});
+    await new Promise(z=>setTimeout(z,1200)); await sheetList();
+    const mine=REMOTE.find(x=>x.report===r.c&&x.row===RPT_ROW&&String(x.user).toLowerCase()===who().toLowerCase());
+    const ok=mine&&String(mine.value||'')===(S.s||'')&&String(mine.note||'')===(S.note||'');
+    const m2=document.getElementById('savedmsg'); if(m2) m2.innerHTML=(S.s?'Hiện tại: <b>'+STATUS[S.s]+'</b>. ':'')+(ok?'Đã lưu vào Google Sheet.':'Chưa xác nhận được trên Google Sheet, sẽ thử lại lần sau.');
+  }catch(e){ const m2=document.getElementById('savedmsg'); if(m2) m2.innerHTML+=' Không kết nối được Google Sheet.'; }
 }
 async function pushCell(r,i,j,text){
   if(!syncOn()) return;
@@ -1573,10 +1588,16 @@ async function syncAll(){
     await sheetList();
     const me=who().toLowerCase();
     // kéo về: ghi chú của mình có trên Sheet mà máy này chưa có
-    REMOTE.filter(x=>String(x.user).toLowerCase()===me&&String(x.note||'').trim()).forEach(x=>{
+    REMOTE.filter(x=>String(x.user).toLowerCase()===me&&x.row!==RPT_ROW&&String(x.note||'').trim()).forEach(x=>{
       const S=stOf(x.report); S.cells=S.cells||{}; const k=x.row+' || '+x.col; if(!S.cells[k]) S.cells[k]=x.note;
     });
+    REMOTE.filter(x=>String(x.user).toLowerCase()===me&&x.row===RPT_ROW).forEach(x=>{
+      const S=stOf(x.report); if(!S.s&&x.value) S.s=x.value; if(!(S.note||'').trim()&&x.note) S.note=x.note;
+    });
     saveST();
+    if(me){ for(const r of REPORTS){ const S=ST[r.c]; if(!S||(!S.s&&!(S.note||'').trim())) continue;
+      const m=REMOTE.find(x=>x.report===r.c&&x.row===RPT_ROW&&String(x.user).toLowerCase()===me);
+      if(!m||String(m.value||'')!==(S.s||'')||String(m.note||'')!==(S.note||'')){ try{ await sheetPost({action:'save',user:who(),report:r.c,row:RPT_ROW,col:RPT_COL,value:S.s||'',note:S.note||''}); }catch(e){} } } }
     // đẩy lên: ghi chú trên máy này chưa có hoặc khác trên Sheet
     if(me){ for(const r of REPORTS){ const cs=(ST[r.c]&&ST[r.c].cells)||{};
       for(const [k,v] of Object.entries(cs)){ if(!v||!v.trim()) continue; const [row,col]=k.split(' || ');
@@ -1595,13 +1616,13 @@ document.addEventListener('input',e=>{
   clearTimeout(cnTimer); cnTimer=setTimeout(()=>{saveST(); renderNL(r); setSync('Đã lưu trên máy này.'); pushCell(r,i,j,v);},700);
 });
 document.addEventListener('change',e=>{
-  if(e.target.id==='cnwho'){ try{localStorage.setItem(WHO_KEY,e.target.value.trim());}catch(err){} setSync(syncHint()); syncAll(); }
+  if(e.target.id==='cnwho'||e.target.id==='rnwho'){ try{localStorage.setItem(WHO_KEY,e.target.value.trim());}catch(err){} setSync(syncHint()); syncAll(); }
 });
 let noteTimer=null;
 document.addEventListener('input',e=>{
   if(e.target.id!=='note') return;
   const r=REPORTS[parseHash().i]; stOf(r.c).note=e.target.value;
-  clearTimeout(noteTimer); noteTimer=setTimeout(()=>{saveST(); const m=$('#savedmsg'); if(m) m.innerHTML=(stOf(r.c).s?'Hiện tại: <b>'+STATUS[stOf(r.c).s]+'</b>. ':'')+'Đã lưu ghi chú.';},400);
+  clearTimeout(noteTimer); noteTimer=setTimeout(()=>{saveST(); const m=$('#savedmsg'); if(m) m.innerHTML=(stOf(r.c).s?'Hiện tại: <b>'+STATUS[stOf(r.c).s]+'</b>. ':'')+'Đã lưu ghi chú.'; pushReport(r);},700);
 });
 
 /* ---------- đóng / mở sidebar ---------- */
