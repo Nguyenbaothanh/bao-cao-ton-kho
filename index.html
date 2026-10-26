@@ -40,7 +40,7 @@ button{font:inherit;color:inherit}
 
 /* ---------- Đầu trang ---------- */
 .hero{background:var(--surface);border-bottom:1px solid var(--line)}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:20px 40px;padding-top:24px;padding-bottom:22px;align-items:start}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:20px 40px;padding-top:24px;padding-bottom:22px;align-items:start}
 .eyebrow{font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:700}
 .hero h1{font-size:clamp(24px,3.2vw,32px);font-weight:700;margin:6px 0 8px;letter-spacing:-.01em}
 .hero .sub{color:var(--muted);max-width:66ch;margin:0 0 6px}
@@ -316,6 +316,16 @@ dialog#lb header{display:flex;justify-content:space-between;align-items:center;p
 dialog#lb header span{font-size:14px;color:var(--muted)}
 dialog#lb .lbimg{overflow:auto;background:#fff}
 dialog#lb img{display:block;max-width:none;width:max(100%,1400px)}
+.guidebtn{position:absolute;top:20px;right:0;z-index:5;font-weight:600}
+dialog#ug{border:1px solid var(--line);border-radius:14px;padding:0;max-width:720px;width:94vw;max-height:88vh;background:var(--surface);color:var(--fg)}
+dialog#ug::backdrop{background:rgba(8,20,18,.6)}
+dialog#ug .ugh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface)}
+dialog#ug .ugh h2{margin:0;font-size:18px}
+dialog#ug .ugb{padding:6px 20px 20px;overflow:auto;max-height:calc(88vh - 62px);line-height:1.6}
+dialog#ug h3{font-size:15.5px;margin:18px 0 6px}
+dialog#ug ol,dialog#ug ul{margin:6px 0;padding-left:22px}
+dialog#ug li{padding:2px 0}
+dialog#ug .tip{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 12px;font-size:14px;margin:8px 0}
 dialog#cp{border:1px solid var(--line);border-radius:14px;padding:20px;max-width:640px;width:92vw;background:var(--surface);color:var(--fg)}
 dialog#cp::backdrop{background:rgba(8,20,18,.6)}
 dialog#cp textarea{width:100%;min-height:260px;font:13px/1.55 var(--mono);padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
@@ -441,8 +451,74 @@ dialog#cp textarea{width:100%;min-height:260px;font:13px/1.55 var(--mono);paddin
       <p class="sub">10 báo cáo của module Kho, đã mô tả đủ 10/10.</p>
       <p class="meta"><b>Cập nhật</b> 23/10/2026</p>
     </div>
+    <button class="btn guidebtn" type="button" id="ugopen">❓ Xem hướng dẫn</button>
   </div>
 </header>
+
+<dialog id="ug" aria-label="Hướng dẫn sử dụng">
+  <div class="ugh"><h2>Hướng dẫn sử dụng</h2><button class="btn" type="button" id="ugx">Đóng</button></div>
+  <div class="ugb">
+    <p>Trang này giúp bạn xem công thức và cách tính của 10 báo cáo trong module Kho, rồi cho ý kiến để nhóm làm báo cáo chỉnh lại cho đúng.</p>
+
+    <h3>1. Chọn báo cáo cần xem</h3>
+    <ul>
+      <li>Danh sách <b>BÁO CÁO (10)</b> nằm bên trái. Bấm vào tên báo cáo để mở (BR-01 đến BR-10).</li>
+      <li>Vòng tròn cạnh tên báo cáo sẽ đổi trạng thái khi bạn cho ý kiến: <b>Đã chốt</b> hoặc <b>Cần chỉnh sửa</b>.</li>
+      <li>Bấm <b>‹ Ẩn</b> để thu gọn danh sách khi cần thêm chỗ đọc.</li>
+    </ul>
+
+    <h3>2. Đọc nội dung một báo cáo</h3>
+    <ol>
+      <li><b>Mục đích</b>: báo cáo dùng để làm gì và ai dùng.</li>
+      <li><b>Hình báo cáo</b>: bấm vào hình để xem rõ hơn.</li>
+      <li><b>Cách tính</b>: bảng số liệu. Bấm vào một con số để xem công thức, ý nghĩa của ô đó và câu SQL tương ứng ở cột bên phải.</li>
+      <li><b>Ý kiến</b>: nơi bạn chọn kết luận và ghi chú.</li>
+    </ol>
+
+    <h3>3. Cho ý kiến về cả báo cáo</h3>
+    <ol>
+      <li>Kéo xuống mục <b>Ý kiến của bạn về báo cáo này</b>.</li>
+      <li>Chọn <b>Đã chốt</b> nếu công thức và quy tắc đúng như mong muốn, hoặc <b>Cần chỉnh sửa</b> nếu có chỗ sai.</li>
+      <li>Nếu chọn Cần chỉnh sửa, ghi rõ chỗ cần sửa vào ô <b>Ghi chú</b>. Ghi chú tự lưu sau khoảng 1 giây, không cần bấm nút lưu.</li>
+      <li>Bạn có thể đổi lại kết luận bất cứ lúc nào.</li>
+    </ol>
+
+    <h3>4. Ghi chú cho từng ô số</h3>
+    <ol>
+      <li>Bấm vào một con số trong bảng.</li>
+      <li>Ở khung phía trên bảng, nhập ghi chú vào ô <b>Ghi chú của bạn về ô này</b> (ví dụ: số này đúng, lệch so với Refmi, cần hỏi lại ai).</li>
+      <li>Ô đã có ghi chú sẽ được đánh dấu trong bảng.</li>
+    </ol>
+
+    <h3>5. Bình luận trên một đoạn chữ</h3>
+    <ol>
+      <li>Dùng chuột tô đen đoạn chữ bạn muốn góp ý.</li>
+      <li>Nút <b>💬 Bình luận</b> hiện ra ngay dưới đoạn chữ. Bấm vào nút đó.</li>
+      <li>Gõ bình luận và bấm <b>Lưu bình luận</b>. Nhấn Esc nếu muốn đóng.</li>
+      <li>Các bình luận của bạn nằm ở cuối mục Ý kiến của báo cáo đó, có nút Xóa.</li>
+    </ol>
+
+    <h3>6. Gửi ý kiến lên Google Sheet</h3>
+    <ul>
+      <li>Nhập <b>tên của bạn</b> vào ô <b>TÊN CỦA BẠN</b> (ở mục Ý kiến, hoặc trong khung ghi chú ô). Chỉ cần nhập một lần trên mỗi máy.</li>
+      <li>Sau khi có tên, kết luận, ghi chú và bình luận sẽ tự gửi lên Google Sheet chung. Dòng chữ nhỏ dưới ô ghi chú báo "Đã lưu vào Google Sheet" khi thành công.</li>
+      <li>Nếu báo không kết nối được, ý kiến vẫn được giữ trên máy bạn và tự gửi lại lần sau khi mở trang.</li>
+    </ul>
+    <div class="tip">Ý kiến được lưu theo trình duyệt. Hãy dùng cùng một trình duyệt và cùng một tên để thấy lại ý kiến của mình.</div>
+
+    <h3>7. Xem câu SQL</h3>
+    <ul>
+      <li>Khung <b>Câu SQL tương ứng</b> bên phải có hai tab: <b>Chỉ ô này</b> (đoạn SQL của ô bạn vừa bấm) và <b>Cả truy vấn</b> (toàn bộ báo cáo).</li>
+      <li>Bấm <b>Sao chép SQL</b> để copy. Bấm <b>Ẩn ›</b> để đóng khung và <b>‹ SQL</b> để mở lại.</li>
+    </ul>
+
+    <h3>8. Phụ lục</h3>
+    <ul>
+      <li><b>Quy trình hiện tại (AS-IS)</b>: sơ đồ các bước làm việc hiện nay của kho.</li>
+      <li><b>Từ điển dữ liệu</b>: danh sách bảng và cột dữ liệu, có ô tìm kiếm.</li>
+    </ul>
+  </div>
+</dialog>
 
 <div class="wrap app">
   <nav class="side" aria-label="Danh sách báo cáo" id="side"></nav>
@@ -1709,6 +1785,13 @@ document.addEventListener('click',async e=>{
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ qpop.classList.remove('on'); hideQ(); } });
 document.addEventListener('scroll',()=>hideQ(),true);
+
+/* ---------- hướng dẫn sử dụng ---------- */
+document.addEventListener('click',e=>{
+  const ug=document.getElementById('ug'); if(!ug) return;
+  if(e.target.closest('#ugopen')){ try{ug.showModal();}catch(err){ug.setAttribute('open','');} return; }
+  if(e.target.closest('#ugx')||e.target===ug){ ug.close(); }
+});
 
 /* ---------- đóng / mở sidebar ---------- */
 const SIDE_KEY='kho-brd-side-off';
