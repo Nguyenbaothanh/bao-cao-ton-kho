@@ -322,6 +322,8 @@ dialog#lb img{display:block;max-width:none;width:max(100%,1400px)}
 mark.qmark{background:var(--sel,#fff2a8);color:inherit;border-radius:3px;padding:0 1px;cursor:pointer;box-shadow:0 0 0 1px rgba(143,87,0,.35)}
 mark.qmark:hover{filter:brightness(.95)}
 mark.qmark.flash{animation:qflash 1.4s ease 1}
+@keyframes cflash{0%,60%{outline:3px solid var(--accent);outline-offset:2px}100%{outline:3px solid transparent;outline-offset:2px}}
+.cell.cflash{animation:cflash 1.6s ease 1}
 @keyframes qflash{0%,60%{outline:3px solid var(--accent)}100%{outline:3px solid transparent}}
 body.qhide mark.qmark{background:transparent;box-shadow:none}
 .qview{position:fixed;z-index:96;display:none;width:min(380px,calc(100vw - 24px));max-height:60vh;overflow:auto;background:var(--surface);color:var(--fg);border:1.5px solid var(--accent);border-radius:12px;box-shadow:var(--shadow);padding:12px}
@@ -1932,7 +1934,21 @@ function openDrawer(){ renderDrawer(); qdrawer.classList.add('on'); }
 function closeDrawer(){ qdrawer.classList.remove('on'); }
 function goComment(key,q,kind){
   const v=VIEWS.find(x=>(x.kind==='r'&&REPORTS[x.i].c===key)||x.id===key); if(!v) return;
-  const fin=()=>{ setTimeout(()=>{ const m=[...document.querySelectorAll('#view mark.qmark')].find(x=>x.dataset.g===q); if(m){ const cb=m.closest('.blk.collapsed'); if(cb) cb.classList.remove('collapsed'); m.scrollIntoView({block:'center',behavior:'smooth'}); m.classList.remove('flash'); void m.offsetWidth; m.classList.add('flash'); } },250); };
+  const openBlk=el=>{ const cb=el.closest('.blk.collapsed'); if(cb) cb.classList.remove('collapsed'); };
+  const fin=()=>{ let n=0; const t=setInterval(()=>{ n++; let done=false;
+    if(kind==='c'){
+      const r=(typeof CURR!=='undefined')&&CURR; const rep=document.getElementById('rep');
+      if(r&&r.c===key&&r.grid&&rep){
+        const g=r.grid; let fi=-1,fj=-1;
+        g.rows.forEach((row,a)=>g.colNames.forEach((c,b)=>{ if(fi<0&&qnorm(row.name+' · '+c).slice(0,300)===q){ fi=a; fj=b; } }));
+        const btn=fi>=0&&rep.querySelector('.cell[data-r="'+fi+'"][data-c="'+fj+'"]');
+        if(btn){ openBlk(btn); try{ show(fi,fj); }catch(e){} btn.scrollIntoView({block:'center',behavior:'smooth'}); btn.classList.remove('cflash'); void btn.offsetWidth; btn.classList.add('cflash'); done=true; }
+      }
+    } else {
+      const m=[...document.querySelectorAll('#view mark.qmark')].find(x=>x.dataset.g===q);
+      if(m){ openBlk(m); m.scrollIntoView({block:'center',behavior:'smooth'}); m.classList.remove('flash'); void m.offsetWidth; m.classList.add('flash'); done=true; }
+    }
+    if(done||n>14) clearInterval(t); },150); };
   if(parseHash().id!==v.id){ location.hash='#'+v.id; fin(); } else fin();
   if(innerWidth<900) closeDrawer();
 }
