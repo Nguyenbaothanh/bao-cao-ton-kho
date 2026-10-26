@@ -187,6 +187,7 @@ table.mk tr.tot td{font-weight:700;color:#202124}
 .cnote textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
 .cnote small{display:block;margin-top:4px;color:var(--muted);font-size:12.5px}
 .cell{position:relative}
+.cell.othernote{background:#fff3c4!important;box-shadow:inset 0 0 0 1.5px #e0b84a}
 .cell.hasnote::after{content:"";position:absolute;top:5px;left:5px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
 .nlist{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
 .nlist li{padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--bg);line-height:1.5}
@@ -1407,7 +1408,9 @@ function markNotes(r){
   const S=stOf(r.c), cs=S.cells||{};
   document.querySelectorAll('#rep .cell').forEach(b=>{
     const i=+b.dataset.r,j=+b.dataset.c; if(isNaN(i)||isNaN(j)) return;
-    const t=cs[cnKey(r,i,j)]; b.classList.toggle('hasnote',!!(t&&t.trim()));
+    const kk=cnKey(r,i,j), t=cs[kk]; const own=!!(t&&t.trim());
+    const oth=!own&&(typeof REMOTE!=='undefined')&&REMOTE.some(x=>x.report===r.c&&x.row+' || '+x.col===kk&&String(x.note||'').trim());
+    b.classList.toggle('hasnote',own||oth); b.classList.toggle('othernote',oth);
   });
   renderNL(r);
 }
@@ -2008,9 +2011,10 @@ async function adminLogin(){
   const k=prompt('Nhập khóa quản trị:'); if(!k||!k.trim()) return;
   try{ sessionStorage.setItem(ADM_KEY,k.trim()); }catch(e){}
   try{ await sheetList(); }catch(e){ toast('Không kết nối được Google Sheet.'); return; }
-  if(ADMIN_OK){ toast('Đã vào chế độ quản trị.'); applyMarks(); } else toast('Sai khóa quản trị.');
+  if(ADMIN_OK){ toast('Đã vào chế độ quản trị.'); refreshNotes(); applyMarks(); } else toast('Sai khóa quản trị.');
 }
-function adminLogout(){ try{sessionStorage.removeItem(ADM_KEY);}catch(e){} ADMIN_OK=false; const me=who().toLowerCase(); REMOTE=REMOTE.filter(x=>String(x.user).toLowerCase()===me); applyMarks(); }
+function refreshNotes(){ try{ const v=parseHash(); if(v.kind==='r'&&REPORTS[v.i].done&&REPORTS[v.i].grid) markNotes(REPORTS[v.i]); }catch(e){} }
+function adminLogout(){ try{sessionStorage.removeItem(ADM_KEY);}catch(e){} ADMIN_OK=false; const me=who().toLowerCase(); REMOTE=REMOTE.filter(x=>String(x.user).toLowerCase()===me); refreshNotes(); applyMarks(); }
 async function dlHtmlWithData(){
   let src; try{ src=await (await fetch(location.href.split('#')[0],{cache:'no-store'})).text(); }catch(e){ toast('Không tải được mã nguồn trang. Hãy mở trang từ link GitHub Pages.'); return; }
   const re=/(<script type="application\/json" id="kho-db">)[\s\S]*?(<\/script>)/;
