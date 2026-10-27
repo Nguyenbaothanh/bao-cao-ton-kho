@@ -186,7 +186,21 @@ table.mk tr.tot td{font-weight:700;color:#202124}
 .cnote textarea{width:100%;min-height:60px;resize:vertical;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit;font-size:14.5px;line-height:1.5}
 .cnote textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
 .cnote small{display:block;margin-top:4px;color:var(--muted);font-size:12.5px}
+.dtl{margin:12px 0 0;border:1px solid var(--line2);border-radius:12px;background:var(--surface);overflow:hidden}
+.dtl>summary{cursor:pointer;padding:10px 14px;font-weight:600;list-style:none}
+.dtl>summary::before{content:"\25B8";display:inline-block;margin-right:8px;transition:transform .15s}
+.dtl[open]>summary::before{transform:rotate(90deg)}
+.dtl .dnote{margin:0;padding:0 14px 10px;color:var(--muted);font-size:13px;line-height:1.5}
+.dtl .dwrap{overflow:auto;max-height:340px;border-top:1px solid var(--line2)}
+.dtl table{border-collapse:collapse;font-size:12.5px;min-width:100%}
+.dtl td,.dtl th{border:1px solid #d9d9d9;padding:4px 8px;min-width:96px;max-width:240px;vertical-align:top;white-space:normal;word-break:break-word;color:#222}
+.dtl tr.dl td{background:#F8CBAD;font-size:11.5px}
+.dtl tr.dr td{background:#FFFF00;font-size:11.5px}
+.dtl tr.dh td{background:#f1f1f1;font-weight:700;text-align:center}
+.dtl tr.dd td.miss{background:#fafafa;color:#888}
+.dtl tr.dtype td{background:#fff}
 .cell{position:relative}
+.cell.othernote{background:#fff3c4!important;box-shadow:inset 0 0 0 1.5px #e0b84a}
 .cell.hasnote::after{content:"";position:absolute;top:5px;left:5px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
 .nlist{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
 .nlist li{padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:var(--bg);line-height:1.5}
@@ -321,6 +335,8 @@ dialog#lb img{display:block;max-width:none;width:max(100%,1400px)}
 mark.qmark{background:var(--sel,#fff2a8);color:inherit;border-radius:3px;padding:0 1px;cursor:pointer;box-shadow:0 0 0 1px rgba(143,87,0,.35)}
 mark.qmark:hover{filter:brightness(.95)}
 mark.qmark.flash{animation:qflash 1.4s ease 1}
+@keyframes cflash{0%,60%{outline:3px solid var(--accent);outline-offset:2px}100%{outline:3px solid transparent;outline-offset:2px}}
+.cell.cflash{animation:cflash 1.6s ease 1}
 @keyframes qflash{0%,60%{outline:3px solid var(--accent)}100%{outline:3px solid transparent}}
 body.qhide mark.qmark{background:transparent;box-shadow:none}
 .qview{position:fixed;z-index:96;display:none;width:min(380px,calc(100vw - 24px));max-height:60vh;overflow:auto;background:var(--surface);color:var(--fg);border:1.5px solid var(--accent);border-radius:12px;box-shadow:var(--shadow);padding:12px}
@@ -491,6 +507,7 @@ dialog#cp textarea{width:100%;min-height:260px;font:13px/1.55 var(--mono);paddin
   </div>
 </header>
 
+<script type="application/json" id="kho-detail">{"lean":["Stt0","MaKho","SALE_INVENTORY.InventoryName","","MaPhieuNhapKho / MaPhieuXuatKho","MaSoThue","NgayNhapKhoBanDau","","GhiChu","MaVatTuERP","TenVatTuHaiQuan","TenVatTu","ThanhPhan","ArtCode","KhoVatTu","MaMau","DVT","DonViTinh","TyGia","SoSach","SoLuong","DonGiaTam","ThanhTienTam","DonGia","ThanhTien","","TienVAT","","Số hợp đồng xuất","HopDongGiaCong","TenXiNghiep","CusId","TenKhachHang","TenNCC","MaNV","TenNhanVien","","SoChungTu","SoChungTu","","NgayChungTuBanDau","MaSanPham","SoPO","SoHoaDon","NgayHoaDon","","","","","","","LoaiHang","MaPhieuSoanHang","SoLCP","","",""],"refmi":["Stt0","nbc_warehouse_code","nbc_warehouse_name","","nbc_name","","nbc_first_in_date","","","nbc_product_code","","nbc_product_name","nbc_thanh_phan","nbc_art_code","nbc_kho_vat_tu","nbc_mau","nbc_uom","nbc_currency_code","nbc_rate","nbc_quantity (nhập) / nbc_quantity_book (xuất)","nbc_quantity (nhập) / nbc_quantity_actual (xuất)","","","nbc_price_unit","nbc_price_subtotal_vnd","nbc_import_tax","","","nbc_contract_no","","","nbc_customer_code","","","","","","nbc_origin","nbc_origin","","","","","","","","","","","","","nbc_goods_type","nbc_name (bảng soạn hàng)","","","",""],"head":["Stt0","Mã kho","Tên kho","Kho phụ","Số phiếu","Số thuế","Ngày nhập/ xuất","Ngày tác vụ đầu tiên","Diễn giải","Mã vật tư","Tên vật tư khai hải quan","Tên vật tư","Thành phần","Art Code","Khổ vật tư","Mã màu","Đvt","Tiền tệ","Tỷ giá","Sl chứng từ","Số lượng","Giá nt","Tiền nt","Giá","Tiền","Tiền nhập khẩu","Tiền VAT","Tổng tiền","Số hợp đồng xuất","Hợp đồng gia công","Tên xí nghiệp","Mã KH","Tên KH","Tên nhà cung cấp","Mã NV","Họ và tên","Nghiệp vụ","Số chứng từ PNK","Số chứng từ nhập/ xuất","Loại hình tờ khai","Ngày chứng từ","Mã sản phẩm","PO","Số hóa đơn","Ngày hóa đơn","Mẫu HĐ","Ký hiệu HĐ","Tk nợ","Tk có","Tk nợ NK","Tk có NK","Loại hàng","Số phiếu soạn hàng","Số lệnh cấp phát","Số LTH","Ngày lệnh cấp phát","IDNBC"],"rows":[["3231102","BB2","KHO BAO BÌ 2","","PNKBB226010001","","02/01/2026","02/01/2026 10:56","NHẬP HÀNG GIÁ TRỊ","MTN01","Móc treo nhựa","Móc treo nhựa","XL-XXL","HGR3968BLK006-100","19\"","BLACK","pcs","USD","26.377","3.100","3.100","0,2754","853,74","7.264,2258","22.519.100","0","","22.519.100","25/173/NB/SUP/KD","","","SUR","Supreme International, LLC","Mainetti Singapore Pte., Ltd.","V18-196","Trần Nguyễn Tường Vân - FOB","Nhập theo Tờ khai Hải quan","107851921330","107851921330","E31","30/12/2025","","","","","","","153201","3311041","153201","","GT","","","","30/12/2025",""],["4690853","BB2","KHO BAO BÌ 2","","PXKBB226010001","0015538","02/01/2026","02/01/2026 09:30","Nội dung:Cấp phát theo hạn mức","MTN02","Móc treo nhựa (MVN)","Móc treo  nhựa","PLASTIC WITH BAR","NJ45B-MT","","BLACK","pcs","VND","1","387","387","0","0","0","0","","","0","04/23/NBC-STRANG/GC","12/25/NBC-ĐAL/GC","CÔNG TY CP MAY ĐÀ LẠT","C01","CÔNG TY CỔ PHẦN MAY NHÀ BÈ – SÓC TRĂNG","","V11-27","Đặng Thị Hiền","Xuất hàng","","552HSTM","","10/12/2025","","","","","","","N03","N03","N03","","KGT","PSHBB226010001","00161225C01SBBB200-00","","10/12/2025","10255G01SH059"]]}</script>
 <script type="application/json" id="kho-db">[]</script>
 <dialog id="ug" aria-label="Hướng dẫn sử dụng">
   <div class="ugh"><h2>Hướng dẫn sử dụng</h2><button class="btn" type="button" id="ugx">Đóng</button></div>
@@ -556,6 +573,7 @@ dialog#cp textarea{width:100%;min-height:260px;font:13px/1.55 var(--mono);paddin
     <ul>
       <li><b>Quy trình hiện tại (AS-IS)</b>: sơ đồ các bước làm việc hiện nay của kho.</li>
       <li><b>Từ điển dữ liệu</b>: danh sách bảng và cột dữ liệu, có ô tìm kiếm.</li>
+      <li><b>Chi tiết dữ liệu</b>: form chi tiết giao dịch nhập xuất và mức Refmi đã có trường tương ứng.</li>
     </ul>
   </div>
 </dialog>
@@ -1115,7 +1133,8 @@ function renderSide(cur){
   }).join('')}</ol>
   <h2>Phụ lục</h2><ul>
    <li><a class="ri app-link" href="#quy-trinh" data-v="quy-trinh"${cur==='quy-trinh'?' aria-current="page"':''}><span class="rn">Quy trình hiện tại (AS-IS)</span></a></li>
-   <li><a class="ri app-link" href="#tu-dien" data-v="tu-dien"${cur==='tu-dien'?' aria-current="page"':''}><span class="rn">Từ điển dữ liệu</span></a></li></ul>`;
+   <li><a class="ri app-link" href="#tu-dien" data-v="tu-dien"${cur==='tu-dien'?' aria-current="page"':''}><span class="rn">Từ điển dữ liệu</span></a></li>
+   <li><a class="ri app-link" href="#chi-tiet" data-v="chi-tiet"${cur==='chi-tiet'?' aria-current="page"':''}><span class="rn">Chi tiết dữ liệu</span></a></li></ul>`;
 }
 function renderProgress(){}
 function refreshChrome(full){
@@ -1285,6 +1304,24 @@ function show(i,j){
   renderSqp(r,row.name+' · '+g.colNames[j]+' = '+row.v[j],pickSql(r,row,g.colNames[j]),{i,j});
 }
 
+/* ---------- phụ lục: chi tiết dữ liệu (mẫu LEAN / Refmi) ---------- */
+const DET=(()=>{ try{ return JSON.parse(document.getElementById('kho-detail').textContent); }catch(e){ return null; } })();
+function detailView(){
+  if(!DET) return '<article class="rv"><p class="muted">Chưa có dữ liệu mẫu.</p></article>';
+  const n=DET.head.length, got=DET.refmi.filter(x=>x).length;
+  const tds=(arr,miss)=>arr.map((x,k)=>'<td'+(miss&&!DET.refmi[k]?' class="miss"':'')+'>'+esc(x==null?'':x)+'</td>').join('');
+  return `<article class="rv"><header class="rh"><div class="rh-top"><span class="code">Phụ lục</span><span class="chip info">Dành cho đội kỹ thuật</span></div>
+   <h2>Chi tiết dữ liệu</h2>
+   <p class="muted" style="margin:8px 0 0;max-width:72ch">Form chi tiết giao dịch nhập xuất (file LEAN “Chi tiết NX”). Refmi hiện có <b>${got}/${n}</b> cột. Đây là mẫu 2 dòng (1 phiếu nhập, 1 phiếu xuất) để minh họa; chưa lọc theo từng con số trong báo cáo.</p></header>
+   <section class="blk"><h3 class="bh" style="font-size:18px">Mẫu chi tiết</h3>
+   <p class="dnote" style="margin:0 0 10px;padding:0">Dòng hồng là trường LEAN. Dòng vàng là trường Refmi tương ứng; ô vàng trống nghĩa là Refmi chưa có. Kéo ngang để xem đủ ${n} cột.</p>
+   <div class="dtl"><div class="dwrap" style="max-height:none"><table><tbody>
+   <tr class="dl">${tds(DET.lean)}</tr><tr class="dr">${tds(DET.refmi)}</tr><tr class="dh">${tds(DET.head)}</tr>
+   ${DET.rows.map(r=>'<tr class="dd">'+tds(r,true)+'</tr>').join('')}
+   </tbody></table></div></div></section></article>`;
+}
+
+
 /* ---------- khung SQL bên phải: bấm một ô thì hiện câu SQL ---------- */
 function sqlList(c){
   const s=SQLB.br[c]; if(!s) return [];
@@ -1407,7 +1444,9 @@ function markNotes(r){
   const S=stOf(r.c), cs=S.cells||{};
   document.querySelectorAll('#rep .cell').forEach(b=>{
     const i=+b.dataset.r,j=+b.dataset.c; if(isNaN(i)||isNaN(j)) return;
-    const t=cs[cnKey(r,i,j)]; b.classList.toggle('hasnote',!!(t&&t.trim()));
+    const kk=cnKey(r,i,j), t=cs[kk]; const own=!!(t&&t.trim());
+    const oth=!own&&(typeof REMOTE!=='undefined')&&REMOTE.some(x=>x.report===r.c&&x.row+' || '+x.col===kk&&String(x.note||'').trim());
+    b.classList.toggle('hasnote',own||oth); b.classList.toggle('othernote',oth);
   });
   renderNL(r);
 }
@@ -1546,7 +1585,7 @@ function initDict(){
 }
 
 /* ---------- điều hướng ---------- */
-const VIEWS=[...REPORTS.map((r,i)=>({id:slug(i),kind:'r',i})),{id:'quy-trinh',kind:'qt'},{id:'tu-dien',kind:'dict'}];
+const VIEWS=[...REPORTS.map((r,i)=>({id:slug(i),kind:'r',i})),{id:'quy-trinh',kind:'qt'},{id:'tu-dien',kind:'dict'},{id:'chi-tiet',kind:'detail'}];
 let CURVIEW='';
 function parseHash(){
   const h=decodeURIComponent(location.hash.replace(/^#/,'')).toLowerCase();
@@ -1565,6 +1604,9 @@ function route(scroll){
   } else if(v.kind==='qt'){
     $('.app').classList.remove('has-sql'); $('#sqp').hidden=true;
     host.innerHTML=qtView(); document.getElementById('qtframe').srcdoc=QTHTML; document.title='Quy trình hiện tại · Báo cáo tồn kho';
+  } else if(v.kind==='detail'){
+    $('.app').classList.remove('has-sql'); $('#sqp').hidden=true;
+    host.innerHTML=detailView(); document.title='Chi tiết dữ liệu · Báo cáo tồn kho';
   } else { $('.app').classList.remove('has-sql'); $('#sqp').hidden=true; host.innerHTML=dictView(); initDict(); document.title='Từ điển dữ liệu · Báo cáo tồn kho'; }
   refreshChrome(true);
   initCollapse();
@@ -1848,7 +1890,7 @@ document.addEventListener('scroll',()=>hideQ(),true);
 
 /* ---------- hiện bình luận trên giao diện ---------- */
 const qnorm=t=>String(t||'').replace(/\s+/g,' ').trim();
-function labelOf(key){ const v=VIEWS.find(x=>(x.kind==='r'&&REPORTS[x.i].c===key)||x.id===key); return v&&v.kind==='r'?REPORTS[v.i].c+': '+REPORTS[v.i].t:(key==='quy-trinh'?'Quy trình hiện tại':key==='tu-dien'?'Từ điển dữ liệu':key); }
+function labelOf(key){ const v=VIEWS.find(x=>(x.kind==='r'&&REPORTS[x.i].c===key)||x.id===key); return v&&v.kind==='r'?REPORTS[v.i].c+': '+REPORTS[v.i].t:(key==='quy-trinh'?'Quy trình hiện tại':key==='tu-dien'?'Từ điển dữ liệu':key==='chi-tiet'?'Chi tiết dữ liệu':key); }
 function allComments(){
   const out=[], me=who().toLowerCase(), seen=new Set();
   for(const key in ST){ for(const z of (ST[key].quotes||[])){ out.push({key,kind:'q',q:z.q,n:z.n,user:who()||'Bạn',mine:true}); seen.add('q|'+key+'|'+qnorm(z.q).slice(0,300)+'|'+me); }
@@ -1929,7 +1971,21 @@ function openDrawer(){ renderDrawer(); qdrawer.classList.add('on'); }
 function closeDrawer(){ qdrawer.classList.remove('on'); }
 function goComment(key,q,kind){
   const v=VIEWS.find(x=>(x.kind==='r'&&REPORTS[x.i].c===key)||x.id===key); if(!v) return;
-  const fin=()=>{ setTimeout(()=>{ const m=[...document.querySelectorAll('#view mark.qmark')].find(x=>x.dataset.g===q); if(m){ const cb=m.closest('.blk.collapsed'); if(cb) cb.classList.remove('collapsed'); m.scrollIntoView({block:'center',behavior:'smooth'}); m.classList.remove('flash'); void m.offsetWidth; m.classList.add('flash'); } },250); };
+  const openBlk=el=>{ const cb=el.closest('.blk.collapsed'); if(cb) cb.classList.remove('collapsed'); };
+  const fin=()=>{ let n=0; const t=setInterval(()=>{ n++; let done=false;
+    if(kind==='c'){
+      const r=(typeof CURR!=='undefined')&&CURR; const rep=document.getElementById('rep');
+      if(r&&r.c===key&&r.grid&&rep){
+        const g=r.grid; let fi=-1,fj=-1;
+        g.rows.forEach((row,a)=>g.colNames.forEach((c,b)=>{ if(fi<0&&qnorm(row.name+' · '+c).slice(0,300)===q){ fi=a; fj=b; } }));
+        const btn=fi>=0&&rep.querySelector('.cell[data-r="'+fi+'"][data-c="'+fj+'"]');
+        if(btn){ openBlk(btn); try{ show(fi,fj); }catch(e){} btn.scrollIntoView({block:'center',behavior:'smooth'}); btn.classList.remove('cflash'); void btn.offsetWidth; btn.classList.add('cflash'); done=true; }
+      }
+    } else {
+      const m=[...document.querySelectorAll('#view mark.qmark')].find(x=>x.dataset.g===q);
+      if(m){ openBlk(m); m.scrollIntoView({block:'center',behavior:'smooth'}); m.classList.remove('flash'); void m.offsetWidth; m.classList.add('flash'); done=true; }
+    }
+    if(done||n>14) clearInterval(t); },150); };
   if(parseHash().id!==v.id){ location.hash='#'+v.id; fin(); } else fin();
   if(innerWidth<900) closeDrawer();
 }
@@ -2008,9 +2064,10 @@ async function adminLogin(){
   const k=prompt('Nhập khóa quản trị:'); if(!k||!k.trim()) return;
   try{ sessionStorage.setItem(ADM_KEY,k.trim()); }catch(e){}
   try{ await sheetList(); }catch(e){ toast('Không kết nối được Google Sheet.'); return; }
-  if(ADMIN_OK){ toast('Đã vào chế độ quản trị.'); applyMarks(); } else toast('Sai khóa quản trị.');
+  if(ADMIN_OK){ toast('Đã vào chế độ quản trị.'); refreshNotes(); applyMarks(); } else toast('Sai khóa quản trị.');
 }
-function adminLogout(){ try{sessionStorage.removeItem(ADM_KEY);}catch(e){} ADMIN_OK=false; const me=who().toLowerCase(); REMOTE=REMOTE.filter(x=>String(x.user).toLowerCase()===me); applyMarks(); }
+function refreshNotes(){ try{ const v=parseHash(); if(v.kind==='r'&&REPORTS[v.i].done&&REPORTS[v.i].grid) markNotes(REPORTS[v.i]); }catch(e){} }
+function adminLogout(){ try{sessionStorage.removeItem(ADM_KEY);}catch(e){} ADMIN_OK=false; const me=who().toLowerCase(); REMOTE=REMOTE.filter(x=>String(x.user).toLowerCase()===me); refreshNotes(); applyMarks(); }
 async function dlHtmlWithData(){
   let src; try{ src=await (await fetch(location.href.split('#')[0],{cache:'no-store'})).text(); }catch(e){ toast('Không tải được mã nguồn trang. Hãy mở trang từ link GitHub Pages.'); return; }
   const re=/(<script type="application\/json" id="kho-db">)[\s\S]*?(<\/script>)/;
