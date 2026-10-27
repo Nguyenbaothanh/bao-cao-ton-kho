@@ -1,2 +1,52 @@
+# ==========================================================
+# robots.txt - Bao cao ton kho (Module Kho)
+# ==========================================================
+# LICENSE / DIEU KHOAN SU DUNG NOI DUNG
+# Noi dung tren trang nay (mo ta bao cao, cong thuc, cau SQL, hinh anh)
+# la tai lieu noi bo. Moi quyen duoc bao luu. Khong duoc:
+#   - thu thap tu dong (crawl/scrape) de luu tru hoac phan phoi lai;
+#   - dung de huan luyen hoac tinh chinh (fine-tune) mo hinh AI;
+#   - tao ban sao hoac tai phat hanh khi chua duoc chu so huu cho phep.
+# Lien he chu so huu truoc khi su dung: Nguyen Bao Thanh (Nguyenbaothanh tren GitHub).
+#
+# QUY TAC GHI CHU (COMMENT RULE)
+#   - Dong bat dau bang dau # la ghi chu, bot bo qua khi doc.
+#   - Moi nhom quy tac bat dau bang "User-agent:" va dung rieng voi nhom khac.
+#   - Neu mot bot khop nhieu nhom, bot lam theo nhom khop cu the nhat.
+#   - "Disallow: /" nghia la khong duoc truy cap toan bo trang.
+# ==========================================================
+
+# --- Bot cua Anthropic (Claude) ---
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-User
+Disallow: /
+
+User-agent: Claude-SearchBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+# --- Cac bot AI thuong gap khac ---
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+# --- Tat ca bot con lai ---
+# Content-Signal: cam tim kiem, cam huan luyen AI, cam dung lam dau vao cho AI
 User-agent: *
+Content-Signal: search=no, ai-train=no, ai-input=no
 Disallow: /
