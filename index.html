@@ -199,6 +199,14 @@ table.mk tr.tot td{font-weight:700;color:#202124}
 .dtl tr.dh td{background:#f1f1f1;font-weight:700;text-align:center}
 .dtl tr.dd td.miss{background:#fafafa;color:#888}
 .dtl tr.dtype td{background:#fff}
+.dtldlg{width:min(1500px,96vw);height:min(90vh,900px);max-width:96vw;max-height:94vh;padding:0;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--fg);box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.dtldlg[open]{display:flex;flex-direction:column}
+.dtldlg::backdrop{background:rgba(0,0,0,.45)}
+.dtldlg .dtlhd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.dtldlg .dtlhd small{color:var(--muted);line-height:1.5}
+.dtldlg .dtlac{display:flex;gap:8px;flex-shrink:0}
+.dtldlg .dtlbody{flex:1;overflow:auto;border:0;border-radius:0}
+.dtldlg .dtlbody td,.dtldlg .dtlbody th{min-width:120px;max-width:280px;font-size:13px}
 .cell{position:relative}
 .cell.othernote{background:#fff3c4!important;box-shadow:inset 0 0 0 1.5px #e0b84a}
 .cell.hasnote::after{content:"";position:absolute;top:5px;left:5px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
@@ -1298,7 +1306,7 @@ function show(i,j){
   const flagged=!!(row.flag&&row.flag[j]);
   $('#fbar').innerHTML=`<div><div class="where">${esc(row.name)} · ${esc(g.colNames[j])}</div><div class="val">${esc(row.v[j])}</div></div>
    <div>${flagged?'<span class="tg">Cần xác nhận</span>':''}<div class="lab">Cách tính</div>${fx(f)}${note?`<p class="nt">${fld(note)}</p>`:''}
-   <div class="row2"><button class="btn sm" type="button" data-act="cp">Sao chép công thức</button><button class="btn sm sqopen" type="button" data-sqopen>Xem SQL</button></div>
+   <div class="row2"><button class="btn sm" type="button" data-act="cp">Sao chép công thức</button><button class="btn sm sqopen" type="button" data-sqopen>Xem SQL</button><button class="btn sm" type="button" data-dtlopen>Xem dữ liệu mẫu</button></div>
    <div class="cnote"><label for="cnote">Ghi chú của bạn về ô này</label><textarea id="cnote" placeholder="Ví dụ: số này đúng / lệch so với Refmi / cần hỏi lại ai...">${esc(cellNote(r,i,j))}</textarea><small id="cnsaved">${esc(syncHint())}</small>${whoHTML()}${remoteHTML(r,i,j)}</div></div>`;
   CNK={r:r,i:i,j:j};
   renderSqp(r,row.name+' · '+g.colNames[j]+' = '+row.v[j],pickSql(r,row,g.colNames[j]),{i,j});
@@ -1315,10 +1323,22 @@ function detailView(){
    <p class="muted" style="margin:8px 0 0;max-width:72ch">Form chi tiết giao dịch nhập xuất (file LEAN “Chi tiết NX”). Refmi hiện có <b>${got}/${n}</b> cột. Đây là mẫu 2 dòng (1 phiếu nhập, 1 phiếu xuất) để minh họa; chưa lọc theo từng con số trong báo cáo.</p></header>
    <section class="blk"><h3 class="bh" style="font-size:18px">Mẫu chi tiết</h3>
    <p class="dnote" style="margin:0 0 10px;padding:0">Dòng hồng là trường LEAN. Dòng vàng là trường Refmi tương ứng; ô vàng trống nghĩa là Refmi chưa có. Kéo ngang để xem đủ ${n} cột.</p>
-   <div class="dtl"><div class="dwrap" style="max-height:none"><table><tbody>
-   <tr class="dl">${tds(DET.lean)}</tr><tr class="dr">${tds(DET.refmi)}</tr><tr class="dh">${tds(DET.head)}</tr>
-   ${DET.rows.map(r=>'<tr class="dd">'+tds(r,true)+'</tr>').join('')}
-   </tbody></table></div></div></section></article>`;
+   <div class="dtl"><div class="dwrap" style="max-height:none">${detailTable()}</div></div></section></article>`;
+}
+function detailTable(){
+  const tds=(arr,miss)=>arr.map((x,k)=>'<td'+(miss&&!DET.refmi[k]?' class="miss"':'')+'>'+esc(x==null?'':x)+'</td>').join('');
+  return '<table><tbody><tr class="dl">'+tds(DET.lean)+'</tr><tr class="dr">'+tds(DET.refmi)+'</tr><tr class="dh">'+tds(DET.head)+'</tr>'+
+    DET.rows.map(r=>'<tr class="dd">'+tds(r,true)+'</tr>').join('')+'</tbody></table>';
+}
+/* nút "Xem dữ liệu mẫu" trong khung công thức: mở popup gần toàn màn hình */
+function openDtlDialog(){
+  if(!DET) return;
+  let d=document.getElementById('dtldlg');
+  if(!d){ d=document.createElement('dialog'); d.id='dtldlg'; d.className='dtldlg'; document.body.appendChild(d);
+    d.addEventListener('click',e=>{ if(e.target===d||e.target.closest('[data-dtlclose]')) d.close(); }); }
+  const r=CNK&&CNK.r, g=r&&r.grid, where=g?esc(g.rows[CNK.i].name)+' · '+esc(g.colNames[CNK.j]):'';
+  d.innerHTML='<div class="dtlhd"><div><b>Chi tiết dữ liệu (mẫu)</b>'+(where?' · '+where:'')+'<br><small>Refmi có '+DET.refmi.filter(x=>x).length+'/'+DET.head.length+' cột. Mẫu 2 dòng (1 phiếu nhập, 1 phiếu xuất), chưa lọc theo ô này. Hồng là trường LEAN, vàng là trường Refmi, ô vàng trống là Refmi chưa có.</small></div><div class="dtlac"><a class="btn sm" href="#chi-tiet" data-dtlclose>Mở trang phụ lục</a><button class="btn sm primary" type="button" data-dtlclose>Đóng</button></div></div><div class="dtl dtlbody"><div class="dwrap" style="max-height:none;border:0">'+detailTable()+'</div></div>';
+  d.showModal();
 }
 
 
@@ -1990,6 +2010,7 @@ function goComment(key,q,kind){
   if(innerWidth<900) closeDrawer();
 }
 document.addEventListener('click',e=>{
+  if(e.target.closest('[data-dtlopen]')){ openDtlDialog(); return; }
   if(e.target.closest('#qaopen')){ qdrawer.classList.contains('on')?closeDrawer():openDrawer(); return; }
   if(e.target.closest('#qdx')){ closeDrawer(); return; }
   const it=e.target.closest('[data-qgo]'); if(it){ goComment(it.dataset.qgo,it.dataset.qq,it.dataset.qk); return; }
