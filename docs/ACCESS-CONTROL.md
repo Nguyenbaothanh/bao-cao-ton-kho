@@ -1,5 +1,9 @@
 # Access control – Báo cáo tồn kho
 
+> **STATUS: login is currently DISABLED (site is public).** It was switched off on 2026-10-27 and will be
+> turned back on later. Sections 1-12 describe the setup when it is enabled. To re-enable it, follow
+> section 13. Existing invitations stay in Azure and keep working once login is back.
+
 Handover guide: how the site is locked to invited `@nbc.com.vn` users, and how to add or remove people.
 Everything below can be copy-pasted. No secrets or invitation links are stored in this document.
 
@@ -205,3 +209,38 @@ Run after any change to the config or the user list.
       users can read it from the page, but anyone who already has the URL can still call it. Make sure
       the script requires a token or is restricted to the domain.
 - [ ] The Git repository itself holds the full content; keep the Azure DevOps repo private.
+
+## 13. Re-enable login
+
+Login was removed on 2026-10-27 by replacing the rules in `staticwebapp.config.json` (the only change
+needed). While it is off, the config only hides `/docs/*` (this folder) from the public with a 404.
+
+To turn it back on, replace the content of `staticwebapp.config.json` with the block below, commit and
+push to `main`, wait for the pipeline, then run the checks in section 9:
+
+```json
+{
+  "routes": [
+    { "route": "/.auth/login/github", "statusCode": 404 },
+    { "route": "/.auth/login/twitter", "statusCode": 404 },
+    { "route": "/robots.txt", "allowedRoles": ["anonymous"] },
+    { "route": "/*", "allowedRoles": ["reader"] }
+  ],
+  "responseOverrides": {
+    "401": {
+      "statusCode": 302,
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=.referrer"
+    }
+  }
+}
+```
+
+This is the same file as commit `0c6cab4` (`git show 0c6cab4:staticwebapp.config.json`).
+
+Notes:
+- Invited users (role `reader`) are kept by Azure; check them with the command in section 7. Invitation
+  links older than 7 days have expired and need to be re-created (section 8).
+- With login on, `/docs/*` is also protected by the `reader` role, so you may remove the `/docs/*` 404 rule.
+- Decide before re-enabling whether commenting needs separate roles (see "Roles and commenting" in the
+  project discussion: the notes go from the browser straight to the Google Apps Script, so Azure roles do
+  not restrict them without an `/api` Function).
